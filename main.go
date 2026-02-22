@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func main() {
 	bc := newBlockChain()
@@ -12,6 +15,8 @@ func main() {
 		fmt.Printf("Prev. hash: %x\n", block.prevHash)
 		fmt.Printf("Data: %s\n", block.data)
 		fmt.Printf("Hash: %x\n", block.hash)
+		pow := NewProofOfWork(block)
+		fmt.Printf("PoW: %s\n", strconv.FormatBool(pow.Validate()))
 		fmt.Println()
 	}
 }
