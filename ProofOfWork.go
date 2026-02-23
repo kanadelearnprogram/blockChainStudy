@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"fmt"
+	"math"
 	"math/big"
 )
 
@@ -14,7 +15,7 @@ type ProofOfWork struct {
 }
 
 const targetBits = 8
-const maxnonce = 32 //math.MaxInt64
+const maxnonce = math.MaxInt64
 
 func NewProofOfWork(b *Block) *ProofOfWork {
 	target := big.NewInt(1)
@@ -41,9 +42,9 @@ func IntToHex(num int64) []byte {
 func (pow *ProofOfWork) prepareData(nonce int) []byte {
 	data := bytes.Join(
 		[][]byte{
-			pow.block.prevHash,
-			pow.block.data,
-			IntToHex(pow.block.timestamp),
+			pow.block.PrevHash,
+			pow.block.Data,
+			IntToHex(pow.block.Timestamp),
 			IntToHex(int64(targetBits)),
 			IntToHex(int64(nonce)),
 		},
@@ -58,7 +59,7 @@ func (pow *ProofOfWork) run() (int, []byte) {
 
 	nonce := 0
 
-	fmt.Printf("comtain %s\n", pow.block.data)
+	fmt.Printf("comtain %s\n", pow.block.Data)
 
 	for nonce < maxnonce {
 		data := pow.prepareData(nonce)
@@ -81,7 +82,7 @@ func (pow *ProofOfWork) run() (int, []byte) {
 func (pow *ProofOfWork) Validate() bool {
 	var hashInt big.Int
 
-	data := pow.prepareData(pow.block.nonce)
+	data := pow.prepareData(pow.block.Nonce)
 	hash := sha256.Sum256(data)
 	hashInt.SetBytes(hash[:])
 
